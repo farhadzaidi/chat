@@ -1,0 +1,43 @@
+
+<div class="navbar navbar-expand navbar-dark bg-dark">
+	<ul class="navbar-nav mr-auto">
+		<li class="nav-item">
+			<a class="nav-link" href="{% url 'chat-index' %}"><i class="fas fa-home"></i></a>
+		</li>
+
+		{% if user.is_authenticated %}
+			<li class="nav-item">
+				<a id="friends-list-toggler" class ="nav-link" href="#">
+					<i class="fas fa-user-friends"></i>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a id="notifications-toggle" class="nav-link" href="#"><i class="fas fa-bell"></i></a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link" href="#" id="settingsDropdown" data-toggle="dropdown">
+					<i class="fas fa-cog"></i>
+				</a>
+				<div class="dropdown-menu" aria-labelledby="settingsDropdown">
+					<a class="dropdown-item" href="{% url 'users-password-change' %}">Change Password</a>
+					<a class="dropdown-item delete-account" href="{% url 'users-account-delete' %}">Delete Account</a>
+				</div>
+			</li>
+		{% endif %}
+
+	</ul>
+	<ul class="navbar-nav ml-auto">
+		{% if not user.is_authenticated %}
+			<li class="nav-item">
+				<a class="nav-link" href="{% url 'users-sign-in'%}">Sign In</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{% url 'users-sign-up'%}">Sign Up</a>
+			</li>
+		{% else %}
+			<li class="nav-item">
+				<a class="nav-link" href="{% url 'users-sign-out'%}">Sign Out</a>
+			</li>
+		{% endif %}
+	</ul>
+</div>

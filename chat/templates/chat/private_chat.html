@@ -1,0 +1,73 @@
+{% extends 'chat/base.html' %}
+{% load static %}
+
+{% block style %}
+    
+    <link rel="stylesheet" href="{% static 'chat/css/private-chat.css' %}">
+
+{% endblock style %}
+
+{% block content %}
+
+    {% csrf_token %}
+    
+    <h1>Name: {{ user.username }}</h1>
+    <h1>Chat Name: {{ chat.chat_alias }}</h1>
+
+    <div id="chat-log">
+        {% for message in chat_messages %}
+            {% if message.author == user %}
+                <h5 class="sent text-right mr-3 mt-3">{{ message.text }}</h5>
+                <h6 class="sent text-right mr-3"> {{ message.author }}</h6>
+                <h6 class="sent text-right mr-3 mb-3">{{ message.timestamp|date:"M j, g:i A" }}</h6>
+            {% else %}
+                <h5 class="recieved text-left ml-3 mt-3">{{ message.text }}</h5>
+                <h6 class="recieved text-left ml-3"> {{ message.author }}</h6>
+                <h6 class="recieved text-left ml-3 mb-3">{{ message.timestamp|date:"M j, g:i A" }}</h6>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <input id="message-input" type="text" size="100"><br>
+    <button id="message-send">Send</button>
+
+    <button data-toggle="modal" data-target="#invite-friends-modal">Invite Friends</button>
+
+    <!-- invite friends modal -->
+    <div class="modal" id="invite-friends-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">Invite Friends</div>
+
+                    <div class="modal-body">
+                        <select id="invite-friends" name="invite-friends" multiple>
+                            {% for friend in user.profile.friends.all %}
+                                {% if friend not in chat.group_members.all %}
+                                <option value="{{ friend.username }}">{{ friend.username }}</option>
+                                {% endif %}
+                            {% endfor%}
+                        </select>
+                        <div id="invite-friends-errors"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="invite-friends-submit">Invite Friends</button>
+                        <button data-dismiss="modal">Close</button>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- chat name for js -->
+    <input type="hidden" id="chat-name" value="{{ chat.chat_name }}">
+
+    <!-- current user for js -->
+    <input type="hidden" id="current-user" value="{{ user.username }}">
+    
+{% endblock content %}
+
+{% block script %}
+
+    <script src="{% static 'chat/js/private-chat/private-chat-socket.js' %}"></script>
+    <script src="{% static 'chat/js/private-chat/invite-friends.js' %}"></script>
+
+{% endblock script %}
